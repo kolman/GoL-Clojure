@@ -16,7 +16,21 @@
 ;;; 
 ;;; <img src="http://upload.wikimedia.org/wikipedia/commons/9/96/Animated_glider_emblem.gif">
 ;;; 
+;;; ## Game of Life in Clojure
+;;; 
+;;; Typical implementation in object-oriented languages (as seen at Code Retreats) involve definition of the Cell class, overriding equals and hashCode methods. Then something like Board class and finding all neighbouring cells. If the 45-minutes session is not already over, another goal is to find all neighbouring cell for each cell and determine whether it should survive. And then comes the hard part of this approach - finding dead cells that should become alive.
+;;; 
+;;; It's truly impossible to fit this in 45 minutes; yet the complete algorithm in Clojure takes only few minutes. How is it possible?
+;;; 
+;;; It is a combination of two things: The algorithm and the powerful language.
+;;; 
 ;;; So let's start hacking the joyful Game of Life in Clojure!
+;; **
+
+;; **
+;;; ## Namespace and Imports
+;;; 
+;;; First, we declare the namespace for this piece of code and import some plotting functions that allows to visualise the grid.
 ;; **
 
 ;; @@
@@ -39,6 +53,25 @@
 ;; @@
 ;; =>
 ;;; {"type":"html","content":"<span class='clj-var'>#&#x27;joyful-game.worksheet/board</span>","value":"#'joyful-game.worksheet/board"}
+;; <=
+
+;; **
+;;; ## Finding the Neighbours
+;;; 
+;;; Then we define one handy function, that will return all possible neighbours for a given cell.
+;; **
+
+;; @@
+(defn neighbours [[x y]] ; parameter cell is destructured into x and y
+  (for [dx [-1 0 1] dy [-1 0 1] ; for all combinations of dx and dy...
+        :when (not (= 0 dx dy))] ; ...except when dx = 0 = dy...
+    [(+ x dx) (+ y dy)])) ; ...add dx to x and dy to y
+
+; let's try it out
+(neighbours [1 2])
+;; @@
+;; =>
+;;; {"type":"list-like","open":"<span class='clj-lazy-seq'>(</span>","close":"<span class='clj-lazy-seq'>)</span>","separator":" ","items":[{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>0</span>","value":"0"},{"type":"html","content":"<span class='clj-long'>1</span>","value":"1"}],"value":"[0 1]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>0</span>","value":"0"},{"type":"html","content":"<span class='clj-long'>2</span>","value":"2"}],"value":"[0 2]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>0</span>","value":"0"},{"type":"html","content":"<span class='clj-long'>3</span>","value":"3"}],"value":"[0 3]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>1</span>","value":"1"},{"type":"html","content":"<span class='clj-long'>1</span>","value":"1"}],"value":"[1 1]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>1</span>","value":"1"},{"type":"html","content":"<span class='clj-long'>3</span>","value":"3"}],"value":"[1 3]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>2</span>","value":"2"},{"type":"html","content":"<span class='clj-long'>1</span>","value":"1"}],"value":"[2 1]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>2</span>","value":"2"},{"type":"html","content":"<span class='clj-long'>2</span>","value":"2"}],"value":"[2 2]"},{"type":"list-like","open":"<span class='clj-vector'>[</span>","close":"<span class='clj-vector'>]</span>","separator":" ","items":[{"type":"html","content":"<span class='clj-long'>2</span>","value":"2"},{"type":"html","content":"<span class='clj-long'>3</span>","value":"3"}],"value":"[2 3]"}],"value":"([0 1] [0 2] [0 3] [1 1] [1 3] [2 1] [2 2] [2 3])"}
 ;; <=
 
 ;; @@
