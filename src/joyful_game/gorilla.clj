@@ -11,33 +11,46 @@
                                fill "green"}}]  
   "Takes sequence of boxes (map with :x :y :text :opacity keys) and draws them."
   (let [series-name (uuid)
-        data (map (fn [{x :x y :y text :text box-opacity :opacity}] {:x (* cell-size x) :y (* cell-size y) :text text :opacity (or box-opacity opacity)}) boxes)]
+        data (map (fn [{x :x y :y text :text box-opacity :opacity}] {:x x :x2 (inc x) :y y :y2 (inc y) :text text :opacity (or box-opacity opacity)}) boxes)
+        max-x (+ 2 (apply max (map :x boxes)))
+        min-x (dec (apply min (map :x boxes)))
+        max-y (+ 2 (apply max (map :y boxes)))
+        min-y (dec (apply min (map :y boxes)))
+        width (- max-x min-x)
+        height (- max-y min-y)]
     (gorilla-repl.vega/vega-view 
-      {:scales []
+      {:scales [{:name "x" :range "width" :domain [min-x max-x]}
+                {:name "y" :range "height" :domain [min-y max-y] :reverse true}]
+       :axes [{:type "x" :scale "x" :ticks "nice" :values (range min-x max-x) :grid true :orient "top" 
+               :properties {:labels {:x {:scale "x" :offset (/ cell-size 2)}}}}
+              {:type "y" :scale "y" :ticks "nice" :values (range min-y max-y) :grid true 
+               :properties {:labels {:y {:scale "y" :offset (/ cell-size 2)}}}}
+              {:type "y" :scale "y" :ticks 0 :orient "right"}
+              {:type "x" :scale "x" :ticks 0 :orient "bottom"}
+              {:type "x" :scale "x" :ticks 0 :orient "top"} ; redraw axis hidden by grid of y axis
+              ]
        :marks [{:type "rect", 
                 :from {:data series-name}, 
-                :properties {:enter {
-                                     :x {:field "data.x"}, 
-                                     :width {:value (dec cell-size)}
-                                     :y {:field "data.y"},                                  
-                                     :height { :value (dec cell-size)}  
-                                     :fill {:value fill} :fillOpacity {:field "data.opacity"}}}
-                }
+                :properties {:enter {:x {:scale "x" :field "data.x"}
+                                     :x2 {:scale "x" :field "data.x2"}
+                                     :y {:scale "y" :field "data.y"}
+                                     :y2 {:scale "y" :field "data.y2"}
+                                     :fill {:value fill} :fillOpacity {:field "data.opacity"}}} }
                {:type "text"
                 :from {:data series-name}
                 :properties {:enter {:text {:field "data.text"}
-                                     :x {:field "data.x" :offset 15},   
+                                     :x {:scale "x" :field "data.x" :offset (/ cell-size 2)}
                                      :width {:value (dec cell-size)}
-                                     :y {:field "data.y"},
-                                     :dy {:value (/ cell-size 2)}                                 
+                                     :y {:scale "y" :field "data.y"}
+                                     :dy {:value (/ cell-size 2)}
                                      :align {:value "center"}
                                      :baseline {:value "middle"}
                                      :fill {:value "black"}
                                      :fontSize {:value (* cell-size 0.6)}}}}
-               ], 
-       :data [{:name series-name, :values data}]
-       :width (inc (apply max (map :x data)))
-       :height (inc (apply max (map :y data)))
+               ]
+       :data [{:name series-name :values data}]
+       :width (* cell-size width)
+       :height (* cell-size height)
        })))
 
 (defn plot-cells [cells & {fill :fill :or {fill "red"} :as options}]
