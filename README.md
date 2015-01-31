@@ -21,6 +21,8 @@ lein gorilla :port 8999
 
 If you want to add new code segment, press Ctrl-G-N. To evaluate one segment, press Shift-Enter. To see more shortcuts and actions, click on the tree-lines-icon in the top right corner of the page.
 
+You can watch the original talk on youtube (in czech): http://youtu.be/hr8RnTfijx0
+
 ## Screenshots
 
 ![Data structure](/resources/data.png?raw=true "Defining data structure")
