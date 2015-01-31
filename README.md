@@ -18,3 +18,12 @@ lein gorilla :port 8999
 ```
 - Navigate your browser to [http://localhost:8999/worksheet.html?filename=src/joyful_game/worksheet.clj](http://localhost:8999/worksheet.html?filename=src/joyful_game/worksheet.clj)
 - Press Ctrl+Shift+Enter to evaluate the whole page.
+
+## Screenshots
+
+![Data structure](/resources/data.png?raw=true "Defining data structure")
+
+![Mapping frequencies](/resources/frequencies.png?raw=true "Visualisation of the neighbours frequencies")
+
+![Glider](/resources/glider.png?raw=true "Showing movement of a Glider")
+
