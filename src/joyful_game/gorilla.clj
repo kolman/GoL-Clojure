@@ -15,10 +15,11 @@
   "Takes sequence of boxes (map with :x :y :text :opacity keys) and draws them."
   (let [series-name (uuid)
         data (map (fn [{x :x y :y text :text box-opacity :opacity}] {:x x :x2 (inc x) :y y :y2 (inc y) :text text :opacity (or box-opacity opacity)}) boxes)
-        max-x (+ 2 (apply max (map :x boxes)))
-        min-x (include-zero (dec (apply min (map :x boxes))))
-        max-y (+ 2 (apply max (map :y boxes)))
-        min-y (include-zero (dec (apply min (map :y boxes))))
+        safe-boxes (conj boxes {:x 1 :y 1})
+        max-x (+ 2 (apply max (map :x safe-boxes)))
+        min-x (include-zero (dec (apply min (map :x safe-boxes))))
+        max-y (+ 2 (apply max (map :y safe-boxes)))
+        min-y (include-zero (dec (apply min (map :y safe-boxes))))
         width (- max-x min-x)
         height (- max-y min-y)]
     (gorilla-repl.vega/vega-view 
