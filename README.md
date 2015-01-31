@@ -19,6 +19,8 @@ lein gorilla :port 8999
 - Navigate your browser to [http://localhost:8999/worksheet.html?filename=src/joyful_game/worksheet.clj](http://localhost:8999/worksheet.html?filename=src/joyful_game/worksheet.clj)
 - Press Ctrl+Shift+Enter to evaluate the whole page.
 
+If you want to add new code segment, press Ctrl-G-N. To evaluate one segment, press Shift-Enter. To see more shortcuts and actions, click on the tree-lines-icon in the top right corner of the page.
+
 ## Screenshots
 
 ![Data structure](/resources/data.png?raw=true "Defining data structure")
